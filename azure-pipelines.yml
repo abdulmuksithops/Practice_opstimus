@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
-  vmImage: ubuntu-latest
+  name: awsec2
 
 steps:
 - script: echo Hello, world!
