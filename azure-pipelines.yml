@@ -23,6 +23,51 @@ stages:
                 echo Write your commands here
                 
                 echo Hello world
+
+    - stage: build
+      displayName: "build stage"
+      jobs:
+      - job: BuildJob
+        displayName: "Build Job"
+        pool: AWS.EC2@ubuntu
+        steps:
+          - task: CmdLine@2
+            displayName: "builds"
+            inputs:
+              script: |
+                echo Write your commands here
+                
+                echo Hello world
+
+      - stage: build
+        displayName: "build stage"
+        jobs:
+        - job: BuildJob
+          displayName: "Build Job"
+          pool: AWS.EC2@ubuntu
+          steps:
+            - task: CmdLine@2
+              displayName: "builds"
+              inputs:
+                script: |
+                  echo Write your commands here
+                  
+                  echo Hello world
+
+      - stage: build
+        displayName: "build stage"
+        jobs:
+        - job: BuildJob
+          displayName: "Build Job"
+          pool: AWS.EC2@ubuntu
+          steps:
+            - task: CmdLine@2
+              displayName: "builds"
+              inputs:
+                script: |
+                  echo Write your commands here
+                  
+                  echo Hello world
               
 
 
