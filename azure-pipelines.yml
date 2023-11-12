@@ -19,7 +19,7 @@ stages:
                 whoami
                 pwd
                 echo "10 second delay"
-                timeout 10
+                timeout 10s sleep 10
                 echo " BUILD stage running and end now"
 
   - stage: DEV
