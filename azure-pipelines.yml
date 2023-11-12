@@ -12,14 +12,15 @@ stages:
         pool: AWS.EC2@ubuntu
         steps:
           - task: CmdLine@2
-            displayName: builds
+            displayName: build task
             inputs:
               script: |
-                echo "start building task"
-                sudo apt update
-                sudo apt upgrade
-                apt install -y apache2
-                echo " BUILD  stage running and end now"
+                echo "starting to build the task"
+                whoami
+                pwd
+                echo "10 second delay"
+                timeout 10
+                echo " BUILD stage running and end now"
 
   - stage: DEV
     displayName: DEV stage
@@ -30,7 +31,7 @@ stages:
         pool: AWS.EC2@ubuntu
         steps:
           - task: CmdLine@2
-            displayName: DEV
+            displayName: DEV task
             inputs:
               script: |
                 systemctl start apache2
@@ -46,11 +47,11 @@ stages:
         pool: AWS.EC2@ubuntu
         steps:
           - task: CmdLine@2
-            displayName: PREPEROD
+            displayName: PREPEROD task
             inputs:
               script: |
-                cd /var/www/htlm/opstask
-                sudo cp -R /home/ubuntu/myagent/work_dir/1/s* /var/www/html/web1
+                mkdir /var/www/htlm/web1
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/* /var/www/html/web1/
                 sudo chown -R www-data:www-data /var/www/html/web1
                 sudo chmod -R 775 /var/www/html/web1
                 echo " PREPEROD stage running and end now"
@@ -64,12 +65,12 @@ stages:
         pool: AWS.EC2@ubuntu
         steps:
           - task: CmdLine@2
-            displayName: PROD
+            displayName: PROD task
             inputs:
               script: |
-                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/web1.conf /var/www/html/web1
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/web1.conf /etc/apache2/sites-available/
                 sudo a2dissite 000-default.conf 
-                sudo a2ensite opstask.conf
+                sudo a2ensite web1.conf
                 systemctl reload apache2
                 echo " PROD stage running and end now"
-                echo "apache installed and configured check this ip http://34.230.65.229/"
+                echo "apache installed and configured check this ip http://web1.opsdemo.xyz/"
