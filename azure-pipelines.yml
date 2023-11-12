@@ -6,9 +6,23 @@
 trigger:
 - master
 
-pool:
-  name: awsec2
+pool: AWS.EC2@ubuntu
 
-- task: CmdLine@2
-  inputs:
-    script: 'pwd'
+stages:
+  - stage: build
+    displayName: "build stage"
+    jobs:
+      - job: BuildJob
+        displayName: "Build Job"
+        pool: AWS.EC2@ubuntu
+        steps:
+          - task: CmdLine@2
+            displayName: "builds"
+            inputs:
+              script: |
+                echo Write your commands here
+                
+                echo Hello world
+              
+
+
