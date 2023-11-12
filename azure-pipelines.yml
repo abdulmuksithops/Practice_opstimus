@@ -20,9 +20,21 @@ stages:
             displayName: "builds"
             inputs:
               script: |
-                echo Write your commands here
-                
-                echo Hello world
+                echo "starting build task"
+                sudo apt update
+                sudo apt upgrade
+                apt install -y apache2
+                systemctl start apache2
+                systemctl enable apache2
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s* /var/www/html/opstask
+                cd /var/www/html/opstask
+                sudo chown -R www-data:www-data /var/www/html/opstask
+                sudo chmod -R 775 /var/www/html/opstask
+                sudo a2dissite 000-default.conf 
+                sudo a2ensite opstask.conf
+                systemctl reload apache2
+                echo "apache installed and configured check this ip http://34.230.65.229/"
+
 
     - stage: build
       displayName: "build stage"
