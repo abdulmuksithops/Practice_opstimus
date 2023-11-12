@@ -36,6 +36,7 @@ stages:
               script: |
                 systemctl start apache2
                 systemctl enable apache2
+                sudo ufw allow 'Apache'
                 echo " DEV stage running and end now"
 
   - stage: PREPEROD
