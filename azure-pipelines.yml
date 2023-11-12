@@ -1,85 +1,68 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- master
+  - master
 
 pool: AWS.EC2@ubuntu
 
 stages:
   - stage: build
-    displayName: "build stage"
+    displayName: build stage
     jobs:
       - job: BuildJob
-        displayName: "Build Job"
+        displayName: Build Job
         pool: AWS.EC2@ubuntu
         steps:
           - task: CmdLine@2
-            displayName: "builds"
+            displayName: builds
             inputs:
               script: |
-                echo "starting build task"
+                echo "start building task"
                 sudo apt update
                 sudo apt upgrade
                 apt install -y apache2
                 systemctl start apache2
                 systemctl enable apache2
-                sudo cp -R /home/ubuntu/myagent/work_dir/1/s* /var/www/html/opstask
-                cd /var/www/html/opstask
+                cd /var/www/htlm/opstask
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/* /var/www/html/opstask
                 sudo chown -R www-data:www-data /var/www/html/opstask
                 sudo chmod -R 775 /var/www/html/opstask
                 sudo a2dissite 000-default.conf 
                 sudo a2ensite opstask.conf
                 systemctl reload apache2
                 echo "apache installed and configured check this ip http://34.230.65.229/"
+                echo " BUILD  stage running and end now"
 
-
-    - stage: build
-      displayName: "build stage"
-      jobs:
-      - job: BuildJob
-        displayName: "Build Job"
+  - stage: DEV
+    displayName: DEV stage
+    jobs:
+      - job: DEVJob
+        displayName: DEV Job
         pool: AWS.EC2@ubuntu
         steps:
           - task: CmdLine@2
-            displayName: "builds"
+            displayName: builds
             inputs:
-              script: |
-                echo Write your commands here
-                
-                echo Hello world
+              script: 'echo " DEV stage running and end now"'
 
-      - stage: build
-        displayName: "build stage"
-        jobs:
-        - job: BuildJob
-          displayName: "Build Job"
-          pool: AWS.EC2@ubuntu
-          steps:
-            - task: CmdLine@2
-              displayName: "builds"
-              inputs:
-                script: |
-                  echo Write your commands here
-                  
-                  echo Hello world
+  - stage: PREPEROD
+    displayName: PREPEROD stage
+    jobs:
+      - job: PREPERODdJob
+        displayName: PREPEROD Job
+        pool: AWS.EC2@ubuntu
+        steps:
+          - task: CmdLine@2
+            displayName: builds
+            inputs:
+              script: 'echo " PREPEROD stage running and end now"'
 
-      - stage: build
-        displayName: "build stage"
-        jobs:
-        - job: BuildJob
-          displayName: "Build Job"
-          pool: AWS.EC2@ubuntu
-          steps:
-            - task: CmdLine@2
-              displayName: "builds"
-              inputs:
-                script: |
-                  echo Write your commands here
-                  
-                  echo Hello world
-              
-
-
+  - stage: PROD
+    displayName: PROD stage
+    jobs:
+      - job: PRODJob
+        displayName: PROD Job
+        pool: AWS.EC2@ubuntu
+        steps:
+          - task: CmdLine@2
+            displayName: builds
+            inputs:
+              script: 'echo " PROD stage running and end now"'
