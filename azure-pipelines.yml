@@ -19,50 +19,57 @@ stages:
                 sudo apt update
                 sudo apt upgrade
                 apt install -y apache2
-                systemctl start apache2
-                systemctl enable apache2
-                cd /var/www/htlm/opstask
-                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/* /var/www/html/opstask
-                sudo chown -R www-data:www-data /var/www/html/opstask
-                sudo chmod -R 775 /var/www/html/opstask
-                sudo a2dissite 000-default.conf 
-                sudo a2ensite opstask.conf
-                systemctl reload apache2
-                echo "apache installed and configured check this ip http://34.230.65.229/"
                 echo " BUILD  stage running and end now"
 
   - stage: DEV
     displayName: DEV stage
+    dependsOn: build
     jobs:
       - job: DEVJob
         displayName: DEV Job
         pool: AWS.EC2@ubuntu
         steps:
           - task: CmdLine@2
-            displayName: builds
+            displayName: DEV
             inputs:
-              script: 'echo " DEV stage running and end now"'
+              script: |
+                systemctl start apache2
+                systemctl enable apache2
+                echo " DEV stage running and end now"
 
   - stage: PREPEROD
     displayName: PREPEROD stage
+    dependsOn: DEV
     jobs:
       - job: PREPERODdJob
         displayName: PREPEROD Job
         pool: AWS.EC2@ubuntu
         steps:
           - task: CmdLine@2
-            displayName: builds
+            displayName: PREPEROD
             inputs:
-              script: 'echo " PREPEROD stage running and end now"'
+              script: |
+                cd /var/www/htlm/opstask
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s* /var/www/html/web1
+                sudo chown -R www-data:www-data /var/www/html/web1
+                sudo chmod -R 775 /var/www/html/web1
+                echo " PREPEROD stage running and end now"
 
   - stage: PROD
     displayName: PROD stage
+    dependsOn: PREPEROD
     jobs:
       - job: PRODJob
         displayName: PROD Job
         pool: AWS.EC2@ubuntu
         steps:
           - task: CmdLine@2
-            displayName: builds
+            displayName: PROD
             inputs:
-              script: 'echo " PROD stage running and end now"'
+              script: |
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/web1.conf /var/www/html/web1
+                sudo a2dissite 000-default.conf 
+                sudo a2ensite opstask.conf
+                systemctl reload apache2
+                echo " PROD stage running and end now"
+                echo "apache installed and configured check this ip http://34.230.65.229/"
