@@ -74,3 +74,4 @@ stages:
                 systemctl reload apache2
                 echo " PROD stage running and end now"
                 echo "apache installed and configured check this ip http://web1.opsdemo.xyz/"
+                echo "Access the website using http://34.230.65.229/"
