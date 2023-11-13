@@ -31,6 +31,8 @@ stages:
                 echo "starting to build the task"
                 whoami
                 pwd
+                sudo apt update
+                sudo apt upgrade -y
                 echo "10 second delay"
                 timeout 10s sleep 10
                 echo " BUILD stage running  end now"
@@ -90,6 +92,6 @@ stages:
                 sudo a2ensite web1.conf
                 systemctl reload apache2
                 echo " PROD stage running end now"
-                echo "apache web1 up and live check this ip http://web1.opsdemo.xyz/"
-                echo "Access the website using http://54.205.170.100/"
+                echo "apache web1 up and live check this address http://web1.opsdemo.xyz/"
+                echo " or Access the website using ip http://54.205.170.100/"
 
