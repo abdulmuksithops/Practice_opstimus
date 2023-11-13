@@ -6,92 +6,85 @@
 trigger:
   - master
 
-pool: AWS.EC2@ubuntu
+pool:
+  vmImage: 'AWS.EC2@ubuntu'
 
 variables:
-  - group: my variable group
+  - group: my_variable_group
   - name: DBuser
     value: $(DBuser)
   - name: password
     value: $(password)
       
-
 stages:
-  - stage: build
-    displayName: build stage
+  - stage: Build
+    displayName: Build Stage
     jobs:
       - job: BuildJob
         displayName: Build Job
-        pool: AWS.EC2@ubuntu
         steps:
           - task: CmdLine@2
-            displayName: build task
+            displayName: Build Task
             inputs:
               script: |
-                echo "starting to build the task"
+                echo "Starting to build the task"
                 whoami
                 pwd
-                sudo apt update
-                sudo apt upgrade -y
-                echo "10 second delay"
+                echo "10-second delay"
                 timeout 10s sleep 10
-                echo " BUILD stage running  end now"
+                echo "Build stage running end now"
 
   - stage: DEV
-    displayName: DEV stage
-    dependsOn: build
+    displayName: DEV Stage
+    dependsOn: Build
     jobs:
       - job: DEVJob
         displayName: DEV Job
-        pool: AWS.EC2@ubuntu
         steps:
           - task: CmdLine@2
-            displayName: DEV task
+            displayName: DEV Task
             inputs:
               script: |
-                echo "starting to DEV the task"
+                echo "Starting to DEV the task"
                 systemctl start apache2
                 systemctl enable apache2
                 sudo ufw allow 'Apache'
-                echo " DEV stage running end now"
+                echo "DEV stage running end now"
 
-  - stage: PREPEROD
-    displayName: PREPEROD stage
+  - stage: PREPROD
+    displayName: PREPROD Stage
     dependsOn: DEV
     jobs:
-      - job: PREPERODdJob
-        displayName: PREPEROD Job
-        pool: AWS.EC2@ubuntu
+      - job: PREPRODJob
+        displayName: PREPROD Job
         steps:
           - task: CmdLine@2
-            displayName: PREPEROD task
+            displayName: PREPROD Task
             inputs:
               script: |
-                echo "starting to PREPPEROD the task"
-                mkdir /var/www/htlm/web1
+                echo "Starting to PREPROD the task"
+                mkdir -p /var/www/html/web1
                 sudo cp -R /home/ubuntu/myagent/work_dir/1/s/* /var/www/html/web1/
                 sudo chown -R www-data:www-data /var/www/html/web1
                 sudo chmod -R 775 /var/www/html/web1
-                echo " PREPEROD stage running end now"
+                echo "PREPROD stage running end now"
 
   - stage: PROD
-    displayName: PROD stage
-    dependsOn: PREPEROD
+    displayName: PROD Stage
+    dependsOn: PREPROD
     jobs:
       - job: PRODJob
         displayName: PROD Job
-        pool: AWS.EC2@ubuntu
         steps:
           - task: CmdLine@2
-            displayName: PROD task
+            displayName: PROD Task
             inputs:
               script: |
-                echo "starting to PROD the task"
+                echo "Starting to PROD the task"
                 sudo cp -R /home/ubuntu/myagent/work_dir/1/s/web1.conf /etc/apache2/sites-available/
                 sudo a2dissite 000-default.conf 
                 sudo a2ensite web1.conf
                 systemctl reload apache2
-                echo " PROD stage running end now"
-                echo "apache web1 up and live check this address http://web1.opsdemo.xyz/"
-                echo " or Access the website using ip http://54.205.170.100/"
-
+                echo "PROD stage running end now"
+                echo "Apache web1 up and live. Check this IP http://web1.opsdemo.xyz/"
+                echo "Access the website using http://54.205.170.100/"
