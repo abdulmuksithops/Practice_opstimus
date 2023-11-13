@@ -88,7 +88,7 @@ stages:
                 sudo cp -R /home/ubuntu/myagent/work_dir/1/s/web1.conf /etc/apache2/sites-available/
                 sudo a2dissite 000-default.conf 
                 sudo a2ensite web1.conf
-                systemctl reload apache2
+                sudo systemctl reload apache2
                 echo " PROD stage running end now"
                 echo "apache web1 up and live check this ip http://web1.opsdemo.xyz/"
                 echo "Access the website using http://54.205.170.100/"
