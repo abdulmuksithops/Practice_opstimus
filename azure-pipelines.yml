@@ -3,6 +3,13 @@ trigger:
 
 pool: AWS.EC2@ubuntu
 
+variables:
+- group: my variable group
+- name: DBuser
+  value: {DBuser}
+- name: password
+  value: {password}
+
 stages:
   - stage: build
     displayName: build stage
