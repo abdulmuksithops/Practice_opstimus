@@ -35,14 +35,14 @@ stages:
                 timeout 10s sleep 10
                 sudo systemctl status apache2
                 mkdir -p /var/www/html/build.web1
-                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/* /var/www/html/
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/* /var/www/html/build.web1/
                 sudo chown -R www-data:www-data /var/www/html/build.web1
                 sudo chmod -R 775 /var/www/html/build.web1
-                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/build.web1.conf /etc/apache2/sites-available
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/build.web1.conf /etc/apache2/sites-available/
                 sudo a2dissite 000-default.conf 
                 sudo a2ensite build.web1.conf
                 sudo systemctl reload apache2
-                echo "apache web1 up and live check this ip http://build.web1.opsdemo.xyz/"
+                echo "build.web1 up and live can check this URL http://build.web1.opsdemo.xyz "
                 
                 
 
@@ -60,13 +60,13 @@ stages:
               script: |
                 echo "starting to DEV the task"
                 mkdir -p /var/www/html/dev.web1
-                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/* /var/www/html/
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/* /var/www/html/dev.web1/
                 sudo chown -R www-data:www-data /var/www/html/dev.web1
                 sudo chmod -R 775 /var/www/html/dev.web1
-                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/dev.web1.conf /etc/apache2/sites-available
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/dev.web1.conf /etc/apache2/sites-available/
                 sudo a2ensite dev.web1.conf
                 sudo systemctl reload apache2
-                echo "apache web1 up and live check this ip http://dev.web1.opsdemo.xyz"
+                echo "dev.web1 up and live can check this URL http://dev.web1.opsdemo.xyz "
 
               
 
@@ -84,16 +84,14 @@ stages:
               script: |
                 echo "starting to PREPEROD the task"
                 mkdir -p /var/www/html/preprod.web1
-                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/* /var/www/html/
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/* /var/www/html/preprod.web1/
                 sudo chown -R www-data:www-data /var/www/html/preprod.web1
                 sudo chmod -R 775 /var/www/html/preprod.web1
-                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/preprod.web1.conf /etc/apache2/sites-available
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/preprod.web1.conf /etc/apache2/sites-available/
                 sudo a2ensite preprod.web1.conf
                 sudo systemctl reload apache2
-                echo "apache web1 up and live check this ip http://preprod.web1.opsdemo.xyz/"
-                echo "Access the website using http://54.205.170.100/"
-                echo "preprod.web1.opsdemo.xyz DONE"
-              
+                echo "preperod.web1 up and live can check this URL http://preprod.web1.opsdemo.xyz "
+               
 
   - stage: PROD
     displayName: PROD stage
@@ -115,7 +113,4 @@ stages:
                 sudo cp -R /home/ubuntu/myagent/work_dir/1/s/prod.web1.conf /etc/apache2/sites-available
                 sudo a2ensite prod.web1.conf
                 sudo systemctl reload apache2
-                echo "apache web1 up and live check this ip http://prod.web1.opsdemo.xyz/"
-                echo "Access the website using ip http://54.205.170.100/"
-                echo "I HOPE task 03 CI / CD DONE"
-                
+                echo "prod.web1 up and live can check this URL http://prod.web1.opsdemo.xyz "
