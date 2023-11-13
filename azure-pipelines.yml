@@ -39,7 +39,6 @@ stages:
                 sudo chown -R www-data:www-data /var/www/html/build.web1
                 sudo chmod -R 775 /var/www/html/build.web1
                 sudo cp -R /home/ubuntu/myagent/work_dir/1/s/build.web1.conf /etc/apache2/sites-available/
-                sudo a2dissite 000-default.conf 
                 sudo a2ensite build.web1.conf
                 sudo systemctl reload apache2
                 echo "build.web1 up and live can check this URL http://build.web1.opsdemo.xyz "
