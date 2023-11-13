@@ -33,7 +33,7 @@ stages:
                 pwd
                 echo "10 second delay"
                 timeout 10s sleep 10
-                echo " BUILD stage running and end now"
+                echo " BUILD stage running  end now"
 
   - stage: DEV
     displayName: DEV stage
@@ -47,10 +47,11 @@ stages:
             displayName: DEV task
             inputs:
               script: |
+                echo "starting to DEV the task"
                 systemctl start apache2
                 systemctl enable apache2
                 sudo ufw allow 'Apache'
-                echo " DEV stage running and end now"
+                echo " DEV stage running end now"
 
   - stage: PREPEROD
     displayName: PREPEROD stage
@@ -64,11 +65,12 @@ stages:
             displayName: PREPEROD task
             inputs:
               script: |
+                echo "starting to PREPPEROD the task"
                 mkdir /var/www/htlm/web1
                 sudo cp -R /home/ubuntu/myagent/work_dir/1/s/* /var/www/html/web1/
                 sudo chown -R www-data:www-data /var/www/html/web1
                 sudo chmod -R 775 /var/www/html/web1
-                echo " PREPEROD stage running and end now"
+                echo " PREPEROD stage running end now"
 
   - stage: PROD
     displayName: PROD stage
@@ -82,11 +84,12 @@ stages:
             displayName: PROD task
             inputs:
               script: |
+                echo "starting to PROD the task"
                 sudo cp -R /home/ubuntu/myagent/work_dir/1/s/web1.conf /etc/apache2/sites-available/
                 sudo a2dissite 000-default.conf 
                 sudo a2ensite web1.conf
                 systemctl reload apache2
-                echo " PROD stage running and end now"
-                echo "apache installed and configured check this ip http://web1.opsdemo.xyz/"
+                echo " PROD stage running end now"
+                echo "apache web1 up and live check this ip http://web1.opsdemo.xyz/"
                 echo "Access the website using http://54.205.170.100/"
 
