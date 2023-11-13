@@ -67,7 +67,7 @@ stages:
               script: |
                 echo "starting to PREPPEROD the task"
                 mkdir -p /var/www/htlm/web1
-                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/* /var/www/html/web1/
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/* /var/www/html/web1
                 sudo chown -R www-data:www-data /var/www/html/web1
                 sudo chmod -R 775 /var/www/html/web1
                 echo " PREPEROD stage running end now"
