@@ -1,15 +1,19 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
 trigger:
   - master
-
 pool: AWS.EC2@ubuntu
-
 variables:
-- group: my variable group
-- name: DBuser
-  value: {DBuser}
-- name: password
-  value: {password}
-
+  - group: my variable group
+  - name: DBuser
+    value:
+      DBuser: null
+  - name: password
+    value:
+      password: null
 stages:
   - stage: build
     displayName: build stage
@@ -28,7 +32,6 @@ stages:
                 echo "10 second delay"
                 timeout 10s sleep 10
                 echo " BUILD stage running and end now"
-
   - stage: DEV
     displayName: DEV stage
     dependsOn: build
@@ -45,7 +48,6 @@ stages:
                 systemctl enable apache2
                 sudo ufw allow 'Apache'
                 echo " DEV stage running and end now"
-
   - stage: PREPEROD
     displayName: PREPEROD stage
     dependsOn: DEV
@@ -57,13 +59,17 @@ stages:
           - task: CmdLine@2
             displayName: PREPEROD task
             inputs:
-              script: |
+              script: >
                 mkdir /var/www/htlm/web1
-                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/* /var/www/html/web1/
-                sudo chown -R www-data:www-data /var/www/html/web1
-                sudo chmod -R 775 /var/www/html/web1
-                echo " PREPEROD stage running and end now"
 
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/*
+                /var/www/html/web1/
+
+                sudo chown -R www-data:www-data /var/www/html/web1
+
+                sudo chmod -R 775 /var/www/html/web1
+
+                echo " PREPEROD stage running and end now"
   - stage: PROD
     displayName: PROD stage
     dependsOn: PREPEROD
@@ -75,11 +81,20 @@ stages:
           - task: CmdLine@2
             displayName: PROD task
             inputs:
-              script: |
-                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/web1.conf /etc/apache2/sites-available/
+              script: >
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/web1.conf
+                /etc/apache2/sites-available/
+
                 sudo a2dissite 000-default.conf 
+
                 sudo a2ensite web1.conf
+
                 systemctl reload apache2
+
                 echo " PROD stage running and end now"
-                echo "apache installed and configured check this ip http://web1.opsdemo.xyz/"
-                echo "Access the website using http://34.230.65.229/"
+
+                echo "apache installed and configured check this ip
+                http://web1.opsdemo.xyz/"
+
+                echo "Access the website using http://54.205.170.100/"
+
