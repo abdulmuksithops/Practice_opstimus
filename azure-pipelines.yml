@@ -1,0 +1,115 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  - master
+
+pool: AWS.EC2@ubuntu
+
+variables:
+  - group: my variable group
+  - name: DBuser
+    value: $(DBuser)
+  - name: password
+    value: $(password)
+      
+
+stages:
+  - stage: build
+    displayName: build stage
+    jobs:
+      - job: BuildJob
+        displayName: Build Job
+        pool: AWS.EC2@ubuntu
+        steps:
+          - task: CmdLine@2
+            displayName: build task
+            inputs:
+              script: |
+                echo "starting to Build the task"
+                whoami
+                pwd
+                echo "10 second delay"
+                timeout 10s sleep 10
+                sudo systemctl status apache2
+                mkdir -p /var/www/html/build.web1
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/* /var/www/html/build.web1
+                sudo chown -R www-data:www-data /var/www/html/build.web1
+                sudo chmod -R 775 /var/www/html/build.web1
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/build.web1.conf /etc/apache2/sites-available
+                sudo a2ensite build.web1.conf
+                sudo systemctl reload apache2
+                echo "build.web1 up and live can check this URL http://build.web1.opsdemo.xyz "
+                
+                
+
+  - stage: DEV
+    displayName: DEV stage
+    dependsOn: build
+    jobs:
+      - job: DEVJob
+        displayName: DEV Job
+        pool: AWS.EC2@ubuntu
+        steps:
+          - task: CmdLine@2
+            displayName: DEV task
+            inputs:
+              script: |
+                echo "starting to DEV the task"
+                mkdir -p /var/www/html/dev.web1
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/* /var/www/html/dev.web1
+                sudo chown -R www-data:www-data /var/www/html/dev.web1
+                sudo chmod -R 775 /var/www/html/dev.web1
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/dev.web1.conf /etc/apache2/sites-available
+                sudo a2ensite dev.web1.conf
+                sudo systemctl reload apache2
+                echo "dev.web1 up and live can check this URL http://dev.web1.opsdemo.xyz "
+
+              
+
+  - stage: PREPEROD
+    displayName: PREPEROD stage
+    dependsOn: DEV
+    jobs:
+      - job: PREPERODdJob
+        displayName: PREPEROD Job
+        pool: AWS.EC2@ubuntu
+        steps:
+          - task: CmdLine@2
+            displayName: PREPEROD task
+            inputs:
+              script: |
+                echo "starting to PREPEROD the task"
+                mkdir -p /var/www/html/preprod.web1
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/* /var/www/html/preprod.web1
+                sudo chown -R www-data:www-data /var/www/html/preprod.web1
+                sudo chmod -R 775 /var/www/html/preprod.web1
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/preprod.web1.conf /etc/apache2/sites-available
+                sudo a2ensite preprod.web1.conf
+                sudo systemctl reload apache2
+                echo "preperod.web1 up and live can check this URL http://preprod.web1.opsdemo.xyz "
+               
+
+  - stage: PROD
+    displayName: PROD stage
+    dependsOn: PREPEROD
+    jobs:
+      - job: PRODJob
+        displayName: PROD Job
+        pool: AWS.EC2@ubuntu
+        steps:
+          - task: CmdLine@2
+            displayName: PROD task
+            inputs:
+              script: |
+                echo "starting to PROD the task"
+                mkdir -p /var/www/html/prod.web1
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/* /var/www/html/prod.web1
+                sudo chown -R www-data:www-data /var/www/html/prod.web1
+                sudo chmod -R 775 /var/www/html/prod.web1
+                sudo cp -R /home/ubuntu/myagent/work_dir/1/s/prod.web1.conf /etc/apache2/sites-available
+                sudo a2ensite prod.web1.conf
+                sudo systemctl reload apache2
+                echo "prod.web1 up and live can check this URL http://prod.web1.opsdemo.xyz "
